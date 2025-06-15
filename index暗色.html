@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEV.CC - 极简设计的巅峰之作</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 加载动画 */
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            z-index: 1000;
+        }
+        
+        .loader-dot {
+            width: 12px;
+            height: 12px;
+            background: #f67110;
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: loader 1.2s infinite ease-in-out;
+        }
+        
+        .loader-dot:nth-child(2) {
+            animation-delay: 0.2s;
+            background: #4cc9f0;
+        }
+        
+        .loader-dot:nth-child(3) {
+            animation-delay: 0.4s;
+            background: #f72585;
+        }
+        
+        @keyframes loader {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* 内容区域 */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(10, 15, 30, 0.5);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .domain-name {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .part {
+            margin: 0 5px;
+        }
+        
+        .first {
+            color: #4cc9f0;
+        }
+        
+        .dot {
+            color: #f67110;
+        }
+        
+        .last {
+            color: #f72585;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-top: 30px;
+            color: #a9a9b7;
+            font-weight: 300;
+        }
+        
+        /* 导航栏 */
+        .minimal-nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .nav-link, .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        
+        .nav-link:hover, .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        svg {
+            stroke-width: 1.8;
+        }
+        
+        /* 胶囊提示样式 */
+        .welcome-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            text-align: center;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+            opacity: 1;
+            transition: all 0.5s ease-out;
+            backdrop-filter: blur(6px);
+            min-width: 280px;
+        }
+        
+        .welcome-notification.hide {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-30px);
+        }
+        
+        .welcome-line1 {
+            font-weight: 600;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            font-size: 16px;
+        }
+        
+        .welcome-line2 {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        /* 位置文字闪烁效果 */
+        .location-text {
+            font-weight: 600;
+            color: #FFD700;
+            transition: opacity 0.25s ease;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* 保护提示 */
+        .protection-message {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 75, 75, 0.15);
+            color: #ff9e9e;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+        }
+        
+        .protection-message.show {
+            opacity: 1;
+        }
+        
+        /* 内容保护层 */
+        .content-protector {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .domain-name {
+                font-size: 3.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .welcome-notification {
+                min-width: 90%;
+                padding: 10px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .domain-name {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="loader">
+        <span class="loader-dot"></span>
+        <span class="loader-dot"></span>
+        <span class="loader-dot"></span>
+    </div>
+    
+    <!-- 内容保护层 -->
+    <div class="content-protector"></div>
+    
+    <!-- 保护提示 -->
+    <div class="protection-message">右键功能已禁用</div>
+    
+    <div class="minimal-nav">
+        <a href="#" class="nav-link" id="about-link" aria-label="关于">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        </a>
+        <a href="#" class="nav-link" id="contact-link" aria-label="联系">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+        </a>
+        <button id="fullscreen-btn" aria-label="切换全屏模式" class="nav-link">
+            <svg class="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+            </svg>
+        </button>
+        <button id="theme-toggle-btn" aria-label="切换颜色模式" class="theme-btn">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </button>
+    </div>
+    
+    <div class="wrapper">
+        <div class="content">
+            <div class="domain-name">
+                <span class="part first">vev</span>
+                <span class="part dot">.</span>
+                <span class="part last">cc</span>
+            </div>
+            <div class="tagline">且揽春风裁作裳，笑拥人间四月天<br>
+                <p style="margin-top: 20px; font-size: 1rem; color: #6c757d;">
+                    六位同学，点分两段 一 极简设计的巅峰之作
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 移除加载动画
+            setTimeout(function() {
+                document.querySelector('.loader').style.display = 'none';
+            }, 1000);
+            
+            // 创建欢迎通知
+            createWelcomeNotification();
+            
+            // 设置保护功能
+            setupProtection();
+            
+            // 主题切换功能
+            setupThemeToggle();
+        });
+        
+        // 创建欢迎通知
+        function createWelcomeNotification() {
+            var welcomeNotification = document.createElement('div');
+            welcomeNotification.className = 'welcome-notification';
+            welcomeNotification.innerHTML = `
+                <div class="welcome-line1">Hello, World</div>
+                <div class="welcome-line2">正在获取位置信息...</div>
+            `;
+            
+            document.body.appendChild(welcomeNotification);
+            
+            // 模拟位置获取
+            setTimeout(function() {
+                const locations = [
+                    "台湾省 新竹县", "广东省 深圳市", "北京市 海淀区", 
+                    "上海市 浦东新区", "日本 东京都", "美国 加利福尼亚州"
+                ];
+                const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+                
+                const line2 = welcomeNotification.querySelector('.welcome-line2');
+                line2.innerHTML = `欢迎来自<span class="location-text">${randomLocation}</span>的朋友`;
+                
+                // 添加闪烁效果
+                const locationText = line2.querySelector('.location-text');
+                let blinkCount = 0;
+                const blinkInterval = setInterval(() => {
+                    locationText.style.opacity = locationText.style.opacity === '0.3' ? '1' : '0.3';
+                    blinkCount++;
+                    
+                    if (blinkCount >= 6) {
+                        clearInterval(blinkInterval);
+                        locationText.style.opacity = '1';
+                    }
+                }, 300);
+            }, 1500);
+            
+            // 8秒后消失
+            setTimeout(function() {
+                welcomeNotification.classList.add('hide');
+                welcomeNotification.addEventListener('transitionend', function() {
+                    welcomeNotification.remove();
+                });
+            }, 8000);
+        }
+        
+        // 设置保护功能
+        function setupProtection() {
+            // 禁用右键菜单
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                showProtectionMessage("右键功能已禁用");
+            });
+            
+            // 禁用文本选择
+            document.addEventListener('selectstart', function(e) {
+                e.preventDefault();
+                showProtectionMessage("内容选择已禁用");
+            });
+            
+            // 禁用复制快捷键
+            document.addEventListener('keydown', function(e) {
+                // 禁用 Ctrl+C / Cmd+C
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                    e.preventDefault();
+                    showProtectionMessage("复制功能已禁用");
+                }
+                
+                // 禁用 Ctrl+A / Cmd+A
+                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                    e.preventDefault();
+                    showProtectionMessage("全选功能已禁用");
+                }
+            });
+        }
+        
+        // 显示保护提示
+        function showProtectionMessage(message) {
+            const msgElement = document.querySelector('.protection-message');
+            msgElement.textContent = message;
+            msgElement.classList.add('show');
+            
+            setTimeout(() => {
+                msgElement.classList.remove('show');
+            }, 2000);
+        }
+        
+        // 设置主题切换
+        function setupThemeToggle() {
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            
+            themeToggleBtn.addEventListener('click', function() {
+                document.body.classList.toggle('light-theme');
+                
+                if (document.body.classList.contains('light-theme')) {
+                    document.body.style.background = "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)";
+                    document.body.style.color = "#333";
+                } else {
+                    document.body.style.background = "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)";
+                    document.body.style.color = "#e6e6e6";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

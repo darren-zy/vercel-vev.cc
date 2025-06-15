@@ -20,30 +20,6 @@
     <meta name="twitter:description" content="极简之名，过目不忘">
     <link rel="icon" href="vev.ico" type="image/x-icon" />
 
-    <style>
-        /* 保护提示样式 */
-        .protection-message {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 75, 75, 0.15);
-            color: #ff9e9e;
-            padding: 8px 15px;
-            border-radius: 10px;
-            font-size: 12px;
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 100, 100, 0.3);
-            pointer-events: none;
-        }
-        
-        .protection-message.show {
-            opacity: 1;
-        }
-    </style>
 </head>
 <body>
     <div class="loader">
@@ -59,9 +35,6 @@
             <span id="theme-notification-text">已切换到浅色模式</span>
         </div>
     </div>
-    
-    <!-- 保护提示 -->
-    <div class="protection-message">右键功能已禁用</div>
     
     <div class="minimal-nav">
         <a href="index.html#" class="nav-link" id="about-link" aria-label="关于">
@@ -130,15 +103,14 @@
     <div class="modal" id="about-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>vev.cc </h2>
-                <!-- <button class="close-modal">&times;</button> -->
+                <h2>VEV.CC </h2>
+                <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <!-- <img src="img.gif" alt="paris" style="width:100%"></p> -->
-                <!-- <p><br> -->
-                <!-- 十几年老域名纯绿色无灰史<br>
-                <a target="_blank" href="https://wanwang.aliyun.com/domain/searchresult/?keyword=vev&suffix=.cc" class="contact-item">前往购买</a>
-                <img src="img.jpeg" alt="paris" style="width:100%"></p> -->
+                <p><br>
+                十几年老域名纯绿色无灰史<br><a target="_blank" href="https://wanwang.aliyun.com/domain/searchresult/?keyword=vev&suffix=.cc" class="contact-item">前往购买</a>
+                <img src="img.jpeg" alt="paris" style="width:100%"></p>
                 <p>这个域名的特点：</p>
                 <ul>
                     <li><strong>简短易记</strong> - 仅由3个字母和一个.cc号组成</li>
@@ -206,56 +178,5 @@
             </div>
         </div>
     </div>
-    
-    <script>
-        // 页面保护功能
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取保护提示元素
-            const protectionMessage = document.querySelector('.protection-message');
-            
-            // 显示保护提示
-            function showProtectionMessage(message) {
-                protectionMessage.textContent = message;
-                protectionMessage.classList.add('show');
-                
-                setTimeout(() => {
-                    protectionMessage.classList.remove('show');
-                }, 2000);
-            }
-            
-            // 禁用右键菜单
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                showProtectionMessage("右键功能已禁用");
-            });
-            
-            // 禁用文本选择
-            document.addEventListener('selectstart', function(e) {
-                e.preventDefault();
-                showProtectionMessage("内容选择已禁用");
-            });
-            
-            // 禁用复制快捷键
-            document.addEventListener('keydown', function(e) {
-                // 禁用 Ctrl+C / Cmd+C
-                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-                    e.preventDefault();
-                    showProtectionMessage("复制功能已禁用");
-                }
-                
-                // 禁用 Ctrl+A / Cmd+A
-                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-                    e.preventDefault();
-                    showProtectionMessage("全选功能已禁用");
-                }
-                
-                // 禁用 F12 开发者工具
-                if (e.key === 'F12') {
-                    e.preventDefault();
-                    showProtectionMessage("开发者工具已禁用");
-                }
-            });
-        });
-    </script>
 </body>
 </html>
