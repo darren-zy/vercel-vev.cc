@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JJFJJ | 唧唧复唧唧</title>
+    <link rel="stylesheet" href="styles.css%3Fv=1.0.1.css">
+    <!-- 新增胶囊提示样式 -->
+    <link rel="stylesheet" href="notification.css">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"> -->
+    <link rel="icon" href="jjfjj.ico" type="image/x-icon" />
+
+    <style>
+        /* 保护提示样式 */
+        .protection-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 75, 75, 0.15);
+            color: #ff9e9e;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+            pointer-events: none;
+        }
+        
+        .protection-message.show {
+            opacity: 1;
+        }
+        
+        /* 底部备案信息样式 */
+        #footer-info {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 15px 0;
+            z-index: 990;
+            background: transparent;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: auto;
+        }
+        
+        #footer-info.show {
+            opacity: 1;
+        }
+        
+        #footer-info a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        #footer-info a:hover {
+            color: #f67110;
+        }
+        
+        /* 深色模式适配 */
+        body.dark-mode #footer-info {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        body:not(.dark-mode) #footer-info {
+            color: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="loader">
+        <span class="loader-dot"></span>
+        <span class="loader-dot"></span>
+        <span class="loader-dot"></span>
+    </div>
+    <canvas id="particles-bg"></canvas>
+    
+    <!-- 添加主题变更通知 -->
+    <div id="theme-notification" class="theme-notification">
+        <div class="notification-content">
+            <span id="theme-notification-text">已切换到浅色模式</span>
+        </div>
+    </div>
+    
+    <!-- 保护提示 -->
+    <div class="protection-message">右键功能已禁用</div>
+    
+    <!-- 底部备案信息 -->
+    <div id="footer-info">
+        <div class="text-center" style="font-size: 12px;">
+            <!--备案信息-->
+            <a href="http://beian.miit.gov.cn/" class="icp" target="_blank" _mstmutation="1" _istranslated="1">粤ICP备18096135号-3</a>    
+            <!--版权信息-->
+            <p style="font-size: 12px; margin-top: 5px;"> 
+                Copyright ©2025 <a href="/">FG云畔</a>. All Rights Reserved.  
+            </p>
+        </div>
+    </div>
+    
+    <div class="minimal-nav">
+        <a href="index.html#" class="nav-link" id="about-link" aria-label="关于">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+        </a>
+        <a href="index.html#" class="nav-link" id="contact-link" aria-label="联系">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+        </a>
+        <button id="fullscreen-btn" aria-label="切换全屏模式" class="nav-link">
+            <svg class="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+            </svg>
+            <svg class="exit-fullscreen-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
+                <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
+                <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
+                <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
+            </svg>
+        </button>
+        <button id="theme-toggle-btn" aria-label="切换颜色模式" class="theme-btn">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <div class="wrapper">
+        <div class="content">
+            <div class="domain-name">
+                <span class="part first">JJFJJ</span>
+                <span class="part dot" style=" -webkit-text-fill-color: #f67110;">.</span>
+                <span class="part last"></span>
+            </div>
+            <div class="tagline">唧唧复唧唧，木兰当户织。不闻机杼声，唯闻女叹息...<br>
+            <p>
+
+            </div>
+        </div>
+    </div>
+    <script src="script.js%3Fv=1.0.0" defer></script>
+    <!-- 新增胶囊提示脚本 -->
+    <script src="notification.js" defer></script>
+    
+    <!-- 在body结束前添加关于弹窗 -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>《木兰诗》</h2>
+                <!-- <button class="close-modal">&times;</button> -->
+            </div>
+            <div class="modal-body">
+                <!-- <img src="img.gif" alt="paris" style="width:100%"></p> -->
+                <!-- <p><br> -->
+                <!-- 十几年老域名纯绿色无灰史<br>
+                <a target="_blank" href="https://wanwang.aliyun.com/domain/searchresult/?keyword=vev&suffix=.cc" class="contact-item">前往购买</a>
+                <img src="img.jpeg" alt="paris" style="width:100%"></p> -->
+                <p>南北朝·北朝乐府</p>
+                <ul style="font-size: 14px;">
+                    <li>唧唧复唧唧，木兰当户织。</li>
+                    <li>不闻机杼声，唯闻女叹息。</li>
+                    <li>问女何所思，问女何所忆。</li>
+                    <li>女亦无所思，女亦无所忆。</li>
+                    <li>昨夜见军帖，可汗大点兵，军书十二卷，卷卷有爷名。</li>
+                    <li>阿爷无大儿，木兰无长兄，愿为市鞍马，从此替爷征。</li>
+                    <li>东市买骏马，西市买鞍鞯，南市买辔头，北市买长鞭。</li>
+                    <li>旦辞爷娘去，暮宿黄河边，不闻爷娘唤女声，但闻黄河流水鸣溅溅。</li>
+                    <li>旦辞黄河去，暮至黑山头，不闻爷娘唤女声，但闻燕山胡骑鸣啾啾。</li>
+                    <li>万里赴戎机，关山度若飞。</li>
+                    <li>朔气传金柝，寒光照铁衣。</li>
+                    <li>将军百战死，壮士十年归。</li>
+                    <li>归来见天子，天子坐明堂。</li>
+                    <li>策勋十二转，赏赐百千强。</li>
+                    <li>可汗问所欲，木兰不用尚书郎，愿驰千里足，送儿还故乡。</li>
+                    <li>爷娘闻女来，出郭相扶将；阿姊闻妹来，当户理红妆；小弟闻姊来，磨刀霍霍向猪羊。</li>
+                    <li>开我东阁门，坐我西阁床。</li>
+                    <li>脱我战时袍，著我旧时裳。</li>
+                    <li>当窗理云鬓，对镜帖花黄。</li>
+                    <li>出门看火伴，火伴皆惊忙：同行十二年，不知木兰是女郎。</li>
+                    <li>雄兔脚扑朔，雌兔眼迷离；双兔傍地走，安能辨我是雄雌？</li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+   <!-- 更新联系方式弹窗 -->
+    <div class="modal" id="contact-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>联系方式</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 3px;">
+                <a href="https://mi.aliyun.com/domain-detail?domainCartTradeParams=dr_29045373_1750040489839&domainName=jjfjj.com&orgType=&productType=2&_v_=47edc66742fe36fc0a839ea5700b8cd5" style="padding: 17px;color: #14b7f6;font-size: 12px;">前往“阿里云平台”查看域名详情>>></a>
+                <div class="contact-grid">
+                    <!-- 邮箱 -->
+<!--                     <a href="mailto:8@88.al" class="contact-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <span>vev.cc</span>
+                    </a> -->
+                    <a href="#" class="contact-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <span>唧唧复唧唧</span>
+                    </a>
+                    <!-- 微信 -->
+                    <a href="index.html#" class="contact-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024" fill="currentColor">
+                            <path d="M692.3 336.8c11.4 0 22.9 0.8 34.3 2.1-30.8-143.9-184.2-251.1-359.9-251.1-196 0-356.8 133.5-356.8 305.8 0 98.8 53.9 180.1 143.9 243.1l-36 108.1 125.6-62.9c45 8.9 81.1 18.1 125.6 18.1 11.3 0 22.5-0.5 33.6-1.4-7-24-11.1-49.1-11.1-75.2.1-158 135.5-286.6 301.8-286.6zM499.1 232.6c27.1 0 45.1 17.9 45.1 45s-18 45-45.1 45c-27 0-54.1-17.9-54.1-45s27.1-45 54.1-45zM267.8 322.6c-27 0-54.1-17.9-54.1-45s27.1-45 54.1-45c27.1 0 45.1 17.9 45.1 45s-18 45-45.1 45zM930.6 605.3c0-143.9-143.9-261.1-305.8-261.1-171.3 0-305.9 117.2-305.9 261.1 0 144 134.6 261.1 305.9 261.1 35.8 0 72-9 107.9-17.9l98.7 54.1-27.1-89.9c72.6-54.1 125.4-126 125.4-207.4zM618.7 559.5c-18 0-36.1-17.9-36.1-36s18.1-36 36.1-36c27.1 0 45.1 17.9 45.1 36s-18 36-45.1 36zM795.4 559.5c-17.9 0-36-17.9-36-36s18.1-36 36-36c27.1 0 45.1 17.9 45.1 36s-18 36-45.1 36z"/>
+                        </svg>
+                        <span>木兰当户织</span>
+                    </a>
+                    <!-- QQ -->
+                    <a href="index.html#" class="contact-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024" fill="currentColor">
+                            <path d="M511.09761 957.257c-80.159 0-153.737-25.019-201.11-62.386-24.057 6.702-54.831 17.489-74.252 30.864-16.617 11.439-14.546 23.106-11.55 27.816 13.15 20.689 225.583 13.211 286.912 6.767v-3.061z"/>
+                            <path d="M496.65061 957.257c80.157 0 153.737-25.019 201.11-62.386 24.057 6.702 54.83 17.489 74.253 30.864 16.616 11.439 14.543 23.106 11.55 27.816-13.15 20.689-225.584 13.211-286.914 6.767v-3.061z"/>
+                            <path d="M497.12861 474.524c131.934-0.876 237.669-25.783 273.497-35.340 8.541-2.28 13.11-6.364 13.11-6.364 0.03-1.172 0.542-20.952 0.542-31.155C784.27761 229.833 701.12561 57.173 496.64061 57.162 292.15661 57.173 209.00061 229.832 209.00061 401.665c0 10.203 0.516 29.983 0.547 31.155 0 0 3.717 3.821 10.529 5.67 33.078 8.98 140.803 35.139 276.08 36.034h0.972z"/>
+                            <path d="M860.28261 619.782c-8.12-26.086-19.204-56.506-30.427-85.72 0 0-6.456-0.795-9.718 0.148-100.71 29.205-222.773 47.818-315.792 46.695h-0.962C410.88561 582.017 289.65061 563.617 189.27961 534.698c-3.262-0.963-9.736-0.148-9.736-0.148-11.222 29.214-22.307 59.634-30.427 85.72-38.36 123.76-19.618 156.27-12.457 156.86 16.952 1.395 66.135-20.348 112.622-44.319 0 0 13.337 12.118 37.645 29.01C328.00761 821.73 396.64061 868.021 512.00061 868.801c116.428-0.78 187.009-47.564 227.533-106.688 24.555-16.851 37.663-28.993 37.663-28.993 46.487 23.971 95.671 45.714 112.622 44.319 7.160-0.59 25.902-33.1-12.454-156.857z"/>
+                        </svg>
+                        <span>不闻机杼声</span>
+                    </a>
+                    <!-- github -->
+                    <a href="index.html#" target="_blank" rel="noopener noreferrer" class="contact-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        <span>唯闻女叹息</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面保护功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取保护提示元素
+            const protectionMessage = document.querySelector('.protection-message');
+            
+            // 显示保护提示
+            function showProtectionMessage(message) {
+                protectionMessage.textContent = message;
+                protectionMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    protectionMessage.classList.remove('show');
+                }, 2000);
+            }
+            
+            // 禁用右键菜单
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                showProtectionMessage("右键功能已禁用");
+            });
+            
+            // 禁用文本选择
+            document.addEventListener('selectstart', function(e) {
+                e.preventDefault();
+                showProtectionMessage("内容选择已禁用");
+            });
+            
+            // 禁用复制快捷键
+            document.addEventListener('keydown', function(e) {
+                // 禁用 Ctrl+C / Cmd+C
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                    e.preventDefault();
+                    showProtectionMessage("复制功能已禁用");
+                }
+                
+                // 禁用 Ctrl+A / Cmd+A
+                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                    e.preventDefault();
+                    showProtectionMessage("全选功能已禁用");
+                }
+                
+                // 禁用 F12 开发者工具
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    showProtectionMessage("开发者工具已禁用");
+                }
+            });
+            
+            // 显示底部备案信息（在保护提示消失后）
+            setTimeout(function() {
+                const footerInfo = document.getElementById('footer-info');
+                if (footerInfo) {
+                    footerInfo.classList.add('show');
+                }
+            }, 5000); // 5秒后显示，确保在保护提示消失后
+        });
+    </script>
+</body>
+</html>
